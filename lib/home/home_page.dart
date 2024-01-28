@@ -40,7 +40,7 @@ class _MyHomePageState extends State<HomePage> {
             {
               "role": "system",
               "content":
-                  "You are a helpful $_systemRole. You only give info about the $_systemRole field and whenever someone is asking instead of that give only one line answer and positively change the answer to the $_systemRole. Say sorry, I can assist you only about $_systemRole field."
+                  "You are a helpful $_systemRole so welcome with one line intro about youreself. Provide useful answer related to $_systemRole. If someone asks about another field instead of $_systemRole, politely inform them about your specialization in $_systemRole."
             },
             {"role": "user", "content": userMessage},
           ],
@@ -62,8 +62,11 @@ class _MyHomePageState extends State<HomePage> {
           // Provide a short answer for queries not relevant to the role
           responseTxt = 'I am here to help with $_systemRole-related queries.';
         } else {
-          // Display the response along with information about the role
-          responseTxt = '$_systemRole: $openAIResponse';
+          // Display the response content without the role prefix
+          final rolePrefix = '$_systemRole: ';
+          responseTxt = openAIResponse.startsWith(rolePrefix)
+              ? openAIResponse.substring(rolePrefix.length)
+              : openAIResponse;
         }
 
         _chatMessages.add(ChatBubble(message: responseTxt, sender: "OpenAI"));
@@ -137,7 +140,7 @@ class _MyHomePageState extends State<HomePage> {
           ),
           Expanded(
             child: Container(
-              margin: const EdgeInsets.all(50),
+              margin: const EdgeInsets.only(left: 50, right: 50, top: 15, bottom: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -146,7 +149,7 @@ class _MyHomePageState extends State<HomePage> {
                     children: [
                       Text(
                         'Ai Assistant',
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(width: 5),
                       const FaIcon(
@@ -179,7 +182,7 @@ class _MyHomePageState extends State<HomePage> {
                               suffixIcon: IconButton(
                                 icon: const Icon(
                                   Icons.send,
-                                  color: Colors.blueAccent,
+                                  color:Color.fromARGB(255, 15, 84, 77),
                                 ),
                                 onPressed: () {
                                   _sendMessage();

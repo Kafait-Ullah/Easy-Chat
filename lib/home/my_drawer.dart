@@ -78,7 +78,7 @@ class MyDrawer extends StatelessWidget {
             const Spacer(),
             ListTile(
               leading: const CircleAvatar(
-                backgroundImage: AssetImage("assets/images/user_avatar.jpg"),
+                backgroundImage: AssetImage("assets/images/profile.jpeg"),
               ),
               title: const Text(
                 "User Name",
