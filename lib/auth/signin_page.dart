@@ -1,4 +1,6 @@
+import 'package:easy_chat/auth/signup_page.dart';
 import 'package:easy_chat/home/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -10,7 +12,11 @@ class SigninPage extends StatefulWidget {
 }
 
 class _SigninPageState extends State<SigninPage> {
-  // ... existing code for controllers and form key
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,7 @@ class _SigninPageState extends State<SigninPage> {
                 gradient: const LinearGradient(
                   colors: [
                     Color.fromARGB(255, 6, 16, 33),
-                    Color.fromARGB(255, 15, 84, 77)
+                    Color.fromARGB(255, 15, 84, 77),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -46,6 +52,7 @@ class _SigninPageState extends State<SigninPage> {
                   children: [
                     Expanded(
                       child: Form(
+                        key: _formKey,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -58,11 +65,12 @@ class _SigninPageState extends State<SigninPage> {
                             SizedBox(
                               width: 300,
                               child: TextFormField(
+                                controller: _emailController,
                                 style: const TextStyle(color: Colors.white),
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   labelText: 'Email',
                                   border: OutlineInputBorder(),
-                                  prefixIcon: Icon(
+                                  prefixIcon: const Icon(
                                     FontAwesomeIcons.envelope,
                                     color: Colors.white,
                                   ),
@@ -79,11 +87,12 @@ class _SigninPageState extends State<SigninPage> {
                             SizedBox(
                               width: 300,
                               child: TextFormField(
+                                controller: _passwordController,
                                 style: const TextStyle(color: Colors.white),
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   labelText: 'Password',
                                   border: OutlineInputBorder(),
-                                  prefixIcon: Icon(
+                                  prefixIcon: const Icon(
                                     FontAwesomeIcons.lock,
                                     color: Colors.white,
                                   ),
@@ -99,19 +108,52 @@ class _SigninPageState extends State<SigninPage> {
                             ),
                             const SizedBox(height: 40),
                             ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => HomePage(),
-                                    ));
-                                // Handle Sign In button click
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
+
+                                  try {
+                                    await _auth.signInWithEmailAndPassword(
+                                      email: _emailController.text,
+                                      password: _passwordController.text,
+                                    );
+
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => HomePage(),
+                                      ),
+                                    );
+                                  } on FirebaseAuthException catch (e) {
+                                    String errorMessage = 'Sign-in failed';
+                                    if (e.code == 'user-not-found' ||
+                                        e.code == 'wrong-password') {
+                                      errorMessage =
+                                          'Invalid email or password';
+                                    }
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(errorMessage),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  } finally {
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+                                  }
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.white,
                                 onPrimary: Colors.blue,
                               ),
-                              child: const Text('Sign In'),
+                              child: _isLoading
+                                  ? const CircularProgressIndicator()
+                                  : const Text('Sign In'),
                             ),
                           ],
                         ),
@@ -129,8 +171,12 @@ class _SigninPageState extends State<SigninPage> {
                         const SizedBox(height: 110),
                         TextButton.icon(
                           onPressed: () {
-                            // Navigate back to Sign Up page
-                            Navigator.pop(context);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignupPage(),
+                              ),
+                            );
                           },
                           icon: const FaIcon(FontAwesomeIcons.arrowLeft),
                           label: const Text('Back to Sign Up'),

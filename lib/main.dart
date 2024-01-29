@@ -9,12 +9,13 @@ void main() async {
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
-      apiKey: "AIzaSyAjRqDmqeOBN6DQXeAsbB5sJL62_gezGZ4",
-      projectId: "easy-chat-4914c",
-      storageBucket: "easy-chat-4914c.appspot.com",
-      messagingSenderId: "441139235906",
-      appId: "1:441139235906:web:2163cba3eef1c656ef31db",
-    ));
+            apiKey: "AIzaSyAjRqDmqeOBN6DQXeAsbB5sJL62_gezGZ4",
+            authDomain: "easy-chat-4914c.firebaseapp.com",
+            projectId: "easy-chat-4914c",
+            storageBucket: "easy-chat-4914c.appspot.com",
+            messagingSenderId: "441139235906",
+            appId: "1:441139235906:web:2163cba3eef1c656ef31db",
+            measurementId: "G-JQ9FWTSCG3"));
   } else {
     await Firebase.initializeApp();
   }

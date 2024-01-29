@@ -1,16 +1,75 @@
 import 'package:easy_chat/auth/signin_page.dart';
+import 'package:easy_chat/home/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({Key? key}) : super(key: key);
+  final VoidCallback? onSignIn; // Callback function
+
+  const SignupPage({Key? key, this.onSignIn}) : super(key: key);
 
   @override
   _SignupPageState createState() => _SignupPageState();
 }
 
 class _SignupPageState extends State<SignupPage> {
-  // ... existing code for controllers and form key
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  bool _isLoading = false;
+
+  Future<void> _signUp() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Check if the user already exists with the provided email
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      // Additional actions after signup (e.g., storing user details in Firestore).
+      // Replace the following with your actual logic.
+      // firestoreInstance.collection("users").doc(userCredential.user.uid).set({
+      //   "name": _nameController.text,
+      //   "email": _emailController.text,
+      // });
+
+      // Navigate to the home page or perform other actions after signup.
+      // For example, you can use Navigator to push a new screen.
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(), // Replace with your home screen
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      // Handle errors during signup
+      if (e.code == 'email-already-in-use') {
+        // If the user already exists, show an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('This email is already registered. Please sign in.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else {
+        // For other errors, print the error message
+        print("Error during signup: ${e.message}");
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +81,6 @@ class _SignupPageState extends State<SignupPage> {
             padding: const EdgeInsets.only(
                 top: 40, bottom: 40, left: 300, right: 300),
             child: Container(
-              // Create a card with blue and teal colors
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [
@@ -47,7 +105,7 @@ class _SignupPageState extends State<SignupPage> {
                   children: [
                     Expanded(
                       child: Form(
-                        // key: _formKey,
+                        key: _formKey,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -59,7 +117,7 @@ class _SignupPageState extends State<SignupPage> {
                             SizedBox(
                               width: 300,
                               child: TextFormField(
-                                // controller: _nameController,
+                                controller: _nameController,
                                 style: const TextStyle(color: Colors.white),
                                 decoration: const InputDecoration(
                                   labelText: 'Name',
@@ -81,7 +139,7 @@ class _SignupPageState extends State<SignupPage> {
                             SizedBox(
                               width: 300,
                               child: TextFormField(
-                                // controller: _emailController,
+                                controller: _emailController,
                                 style: const TextStyle(color: Colors.white),
                                 decoration: const InputDecoration(
                                   labelText: 'Email',
@@ -94,6 +152,10 @@ class _SignupPageState extends State<SignupPage> {
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter your email';
+                                  } else if (!RegExp(
+                                          r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                                      .hasMatch(value)) {
+                                    return 'Please enter a valid email address';
                                   }
                                   return null;
                                 },
@@ -103,7 +165,7 @@ class _SignupPageState extends State<SignupPage> {
                             SizedBox(
                               width: 300,
                               child: TextFormField(
-                                // controller: _passwordController,
+                                controller: _passwordController,
                                 style: const TextStyle(color: Colors.white),
                                 decoration: const InputDecoration(
                                   labelText: 'Password',
@@ -117,20 +179,37 @@ class _SignupPageState extends State<SignupPage> {
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter your password';
+                                  } else if (value.length < 6) {
+                                    return 'Password must be at least 6 characters';
                                   }
                                   return null;
                                 },
                               ),
                             ),
                             const SizedBox(height: 40),
+                            ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  _signUp();
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.white,
+                                onPrimary: Colors.blue,
+                              ),
+                              child: _isLoading
+                                  ? const CircularProgressIndicator()
+                                  : const Text('Sign Up'),
+                            ),
+                            const SizedBox(height: 40),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 20), // Add space in between
+                    const SizedBox(width: 20),
                     Container(
                       height: 300,
-                      width: 1, // Adjust the width as needed
+                      width: 1,
                       color: Colors.white,
                     ),
                     const SizedBox(width: 20),
@@ -148,7 +227,6 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        // Add a button for login
                         TextButton(
                           onPressed: () {
                             Navigator.push(

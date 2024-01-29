@@ -1,3 +1,4 @@
+import 'package:easy_chat/auth/signin_page.dart';
 import 'package:flutter/material.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -88,6 +89,12 @@ class MyDrawer extends StatelessWidget {
                 onSelected: (value) {
                   if (value == 'logout') {
                     // Handle logout
+                    // Navigate to the login page
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SigninPage(),
+                        )); // Replace '/login' with your login route
                   }
                 },
                 icon: const Icon(
