@@ -1,8 +1,23 @@
 import 'package:easy_chat/auth/signup_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
+      apiKey: "AIzaSyAjRqDmqeOBN6DQXeAsbB5sJL62_gezGZ4",
+      projectId: "easy-chat-4914c",
+      storageBucket: "easy-chat-4914c.appspot.com",
+      messagingSenderId: "441139235906",
+      appId: "1:441139235906:web:2163cba3eef1c656ef31db",
+    ));
+  } else {
+    await Firebase.initializeApp();
+  }
   await dotenv.load();
   runApp(const MyApp());
 }
@@ -29,7 +44,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: SignupPage(),
+      home: const SignupPage(),
     );
   }
 }
