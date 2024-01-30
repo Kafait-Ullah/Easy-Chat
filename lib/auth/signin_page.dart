@@ -14,8 +14,8 @@ class SigninPage extends StatefulWidget {
 class _SigninPageState extends State<SigninPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
   @override
@@ -67,10 +67,10 @@ class _SigninPageState extends State<SigninPage> {
                               child: TextFormField(
                                 controller: _emailController,
                                 style: const TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: 'Email',
                                   border: OutlineInputBorder(),
-                                  prefixIcon: const Icon(
+                                  prefixIcon: Icon(
                                     FontAwesomeIcons.envelope,
                                     color: Colors.white,
                                   ),
@@ -89,10 +89,10 @@ class _SigninPageState extends State<SigninPage> {
                               child: TextFormField(
                                 controller: _passwordController,
                                 style: const TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: 'Password',
                                   border: OutlineInputBorder(),
-                                  prefixIcon: const Icon(
+                                  prefixIcon: Icon(
                                     FontAwesomeIcons.lock,
                                     color: Colors.white,
                                   ),
@@ -123,7 +123,7 @@ class _SigninPageState extends State<SigninPage> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => HomePage(),
+                                        builder: (context) => const HomePage(),
                                       ),
                                     );
                                   } on FirebaseAuthException catch (e) {
@@ -148,8 +148,8 @@ class _SigninPageState extends State<SigninPage> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.white,
-                                onPrimary: Colors.blue,
+                                foregroundColor: Colors.blue,
+                                backgroundColor: Colors.white,
                               ),
                               child: _isLoading
                                   ? const CircularProgressIndicator()
@@ -181,7 +181,7 @@ class _SigninPageState extends State<SigninPage> {
                           icon: const FaIcon(FontAwesomeIcons.arrowLeft),
                           label: const Text('Back to Sign Up'),
                           style: TextButton.styleFrom(
-                            primary: Colors.white,
+                            foregroundColor: Colors.white,
                           ),
                         ),
                       ],

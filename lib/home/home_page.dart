@@ -140,7 +140,8 @@ class _MyHomePageState extends State<HomePage> {
           ),
           Expanded(
             child: Container(
-              margin: const EdgeInsets.only(left: 50, right: 50, top: 15, bottom: 10),
+              margin: const EdgeInsets.only(
+                  left: 50, right: 50, top: 15, bottom: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -182,7 +183,7 @@ class _MyHomePageState extends State<HomePage> {
                               suffixIcon: IconButton(
                                 icon: const Icon(
                                   Icons.send,
-                                  color:Color.fromARGB(255, 15, 84, 77),
+                                  color: Color.fromARGB(255, 15, 84, 77),
                                 ),
                                 onPressed: () {
                                   _sendMessage();

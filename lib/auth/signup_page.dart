@@ -17,9 +17,9 @@ class _SignupPageState extends State<SignupPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -30,7 +30,8 @@ class _SignupPageState extends State<SignupPage> {
 
     try {
       // Check if the user already exists with the provided email
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
@@ -47,7 +48,8 @@ class _SignupPageState extends State<SignupPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const HomePage(), // Replace with your home screen
+          builder: (context) =>
+              const HomePage(), // Replace with your home screen
         ),
       );
     } on FirebaseAuthException catch (e) {
@@ -111,9 +113,10 @@ class _SignupPageState extends State<SignupPage> {
                           children: [
                             Image.asset(
                               'assets/images/logo.png',
-                              height: 170,
-                              width: 170,
+                              height: 150,
+                              width: 150,
                             ),
+                            SizedBox(height: 15),
                             SizedBox(
                               width: 300,
                               child: TextFormField(
@@ -194,8 +197,8 @@ class _SignupPageState extends State<SignupPage> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.white,
-                                onPrimary: Colors.blue,
+                                foregroundColor: Colors.blue,
+                                backgroundColor: Colors.white,
                               ),
                               child: _isLoading
                                   ? const CircularProgressIndicator()
@@ -206,13 +209,12 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 20),
                     Container(
                       height: 300,
                       width: 1,
                       color: Colors.white,
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 30),
                     Column(
                       children: [
                         const SizedBox(height: 110),
@@ -223,7 +225,7 @@ class _SignupPageState extends State<SignupPage> {
                           icon: const FaIcon(FontAwesomeIcons.google),
                           label: const Text('Signup with Gmail'),
                           style: TextButton.styleFrom(
-                            primary: Colors.white,
+                            foregroundColor: Colors.white,
                           ),
                         ),
                         const SizedBox(height: 20),
