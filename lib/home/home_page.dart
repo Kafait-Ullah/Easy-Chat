@@ -40,7 +40,7 @@ class _MyHomePageState extends State<HomePage> {
             {
               "role": "system",
               "content":
-                  "You are a helpful $_systemRole so welcome with one line intro about youreself. Provide useful answer related to $_systemRole. If someone asks about another field instead of $_systemRole, politely inform them about your specialization in $_systemRole."
+                  "You are a helpful $_systemRole so welcome with one line intro about yourself. Provide useful answers related to $_systemRole. If someone asks about another field instead of $_systemRole, politely inform them about your specialization in $_systemRole."
             },
             {"role": "user", "content": userMessage},
           ],
@@ -59,10 +59,8 @@ class _MyHomePageState extends State<HomePage> {
         final openAIResponse = _responseModel.choices[0]['message']['content'];
 
         if (openAIResponse.contains('not in my domain')) {
-          // Provide a short answer for queries not relevant to the role
           responseTxt = 'I am here to help with $_systemRole-related queries.';
         } else {
-          // Display the response content without the role prefix
           final rolePrefix = '$_systemRole: ';
           responseTxt = openAIResponse.startsWith(rolePrefix)
               ? openAIResponse.substring(rolePrefix.length)
@@ -79,16 +77,9 @@ class _MyHomePageState extends State<HomePage> {
       responseTxt = 'Error decoding response';
     }
 
-    // Scroll to the bottom after adding a new message
     _scrollToBottom();
 
     setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
   }
 
   void _scrollToBottom() {
@@ -104,7 +95,6 @@ class _MyHomePageState extends State<HomePage> {
   void _sendMessage() {
     final userMessage = _userInputController.text.trim();
     if (userMessage.isNotEmpty) {
-      // Add the user's message to the chat
       setState(() {
         _chatMessages.add(
           ChatBubble(
@@ -114,15 +104,24 @@ class _MyHomePageState extends State<HomePage> {
         );
       });
 
-      // Call OpenAI API and update chat
       _completionFun(userMessage);
 
-      // Clear the input field
       _userInputController.clear();
-
-      // Request focus back to the text field
       _textFieldFocusNode.requestFocus();
     }
+  }
+
+  void _resetScreen() {
+    setState(() {
+      _chatMessages.clear();
+      responseTxt = '';
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
   }
 
   @override
@@ -136,6 +135,7 @@ class _MyHomePageState extends State<HomePage> {
               setState(() {
                 _systemRole = value.toLowerCase();
               });
+              _resetScreen();
             },
           ),
           Expanded(
@@ -150,7 +150,7 @@ class _MyHomePageState extends State<HomePage> {
                     children: [
                       Text(
                         'Ai Assistant',
-                        style: Theme.of(context).textTheme.titleLarge,
+                        style: Theme.of(context).textTheme.headline6,
                       ),
                       const SizedBox(width: 5),
                       const FaIcon(
@@ -173,8 +173,7 @@ class _MyHomePageState extends State<HomePage> {
                         Expanded(
                           child: TextField(
                             controller: _userInputController,
-                            focusNode: _textFieldFocusNode, // Add this line
-
+                            focusNode: _textFieldFocusNode,
                             onSubmitted: (String value) {
                               _sendMessage();
                             },
