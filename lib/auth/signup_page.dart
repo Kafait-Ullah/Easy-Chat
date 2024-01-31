@@ -75,13 +75,15 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(
-                top: 40, bottom: 40, left: 300, right: 300),
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.2),
             child: Container(
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
@@ -118,7 +120,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             SizedBox(height: 15),
                             SizedBox(
-                              width: 300,
+                              width: screenWidth * 0.3,
                               child: TextFormField(
                                 controller: _nameController,
                                 style: const TextStyle(color: Colors.white),
@@ -140,7 +142,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             const SizedBox(height: 10),
                             SizedBox(
-                              width: 300,
+                              width: screenWidth * 0.3,
                               child: TextFormField(
                                 controller: _emailController,
                                 style: const TextStyle(color: Colors.white),
@@ -166,7 +168,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             const SizedBox(height: 10),
                             SizedBox(
-                              width: 300,
+                              width: screenWidth * 0.3,
                               child: TextFormField(
                                 controller: _passwordController,
                                 style: const TextStyle(color: Colors.white),
@@ -210,7 +212,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     Container(
-                      height: 300,
+                      height: screenHeight * 0.5,
                       width: 1,
                       color: Colors.white,
                     ),
